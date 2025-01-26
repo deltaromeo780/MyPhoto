@@ -61,8 +61,20 @@ def get_photo(photo_id: int, db: Session = Depends(get_db)):
         headers={"Content-Disposition": f"inline; filename={photo.filename}"}
     )
 
+
 @app.get("/")
 def root():
     """Strona główna, przekierowująca do strony z wszystkimi zdjęciami."""
     return {"message": "Witaj w aplikacji do przechowywania zdjęć! Przejdź do /photos, aby zobaczyć zdjęcia."}
 
+
+@app.delete("/photos/{photo_id}")
+def delete_photo(photo_id: int, db: Session = Depends(get_db)):
+    """Usuwanie zdjęcia z bazy danych."""
+    photo = db.query(Photo).filter(Photo.id == photo_id).first()
+    if not photo:
+        raise HTTPException(status_code=404, detail="Zdjęcie nie znalezione.")
+
+    db.delete(photo)
+    db.commit()
+    return {"message": f"Zdjęcie o ID {photo_id} zostało usunięte."}
