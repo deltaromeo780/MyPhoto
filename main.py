@@ -40,3 +40,26 @@ def get_photo(photo_id: int, db: Session = Depends(get_db)):
         media_type=photo.content_type,
         headers={"Content-Disposition": f"inline; filename={photo.filename}"}
     )
+
+
+@app.delete("/photos/{photo_id}")
+def delete_photo(photo_id: int, db: Session = Depends(get_db)):
+    """Usuwanie zdjęcia z bazy danych."""
+    photo = db.query(Photo).filter(Photo.id == photo_id).first()
+    if not photo:
+        raise HTTPException(status_code=404, detail="Zdjęcie nie znalezione.")
+
+    db.delete(photo)
+    db.commit()
+    return {"message": f"Zdjęcie o ID {photo_id} zostało usunięte."}
+
+
+@app.get("/photos/")
+def get_all_photos(db: Session = Depends(get_db)):
+    """Pobieranie wszystkich zdjęć z bazy danych."""
+    photos = db.query(Photo).all()  # Pobieramy wszystkie zdjęcia
+    if not photos:
+        raise HTTPException(status_code=404, detail="Brak zdjęć w bazie.")
+
+    return [{"id": photo.id, "filename": photo.filename, "content_type": photo.content_type} for photo in photos]
+
