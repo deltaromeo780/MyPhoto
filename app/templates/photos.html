@@ -19,17 +19,17 @@
         }
 
         h1 {
-        color: #fff; /* Kolor tekstu na biały */
-        font-size: 2.5rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        margin-bottom: 30px;
-        background-color: #2ecc71; /* zielone tło */
-        padding: 20px; /* Przestrzeń wokół tekstu */
-        border-radius: 8px; /* Zaokrąglone rogi */
-        text-align: center; /* Wyśrodkowanie tekstu */
-    }
+            color: #fff; /* Kolor tekstu na biały */
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+            background-color: #2ecc71; /* zielone tło */
+            padding: 20px; /* Przestrzeń wokół tekstu */
+            border-radius: 8px; /* Zaokrąglone rogi */
+            text-align: center; /* Wyśrodkowanie tekstu */
+        }
 
         .container {
             max-width: 1200px;
@@ -128,6 +128,20 @@
                 padding: 8px 16px;
             }
         }
+
+        #upload-form {
+            display: none;
+            margin-top: 30px;
+        }
+
+        /* Stylizacja nagłówka formularza dodawania zdjęcia */
+        #upload-form h2 {
+            color: #000;  /* Czarny kolor czcionki */
+            background-color: #f1c40f;  /* Żółte tło */
+            text-align: center;
+            padding: 15px;
+            border-radius: 8px;
+        }
     </style>
 </head>
 <body>
@@ -139,7 +153,10 @@
                 {% for photo in photos %}
                     <div class="gallery-item">
                         <h2>{{ photo.filename }}</h2>
-                        <img src="/photos/{{ photo.id }}" alt="{{ photo.filename }}">
+                        <!-- Link do pełnego zdjęcia -->
+                        <a href="/photos/{{ photo.id }}" target="_blank">
+                            <img src="/photos/{{ photo.id }}" alt="{{ photo.filename }}">
+                        </a>
                         <p>{{ photo.content_type }}</p>
 
                         <!-- Formularz usuwania zdjęcia -->
@@ -153,11 +170,33 @@
             <p class="no-photos">Brak zdjęć w bazie danych.</p>
         {% endif %}
 
-        <a href="/upload" class="btn-upload">Dodaj nowe zdjęcie</a>
+        <a href="#" class="btn-upload" id="add-photo-btn">Dodaj nowe zdjęcie</a>
+
+        <!-- Formularz dodawania zdjęcia -->
+        <div id="upload-form">
+            <h2>Dodaj nowe zdjęcie</h2>
+            <form action="/photos/" method="POST" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="file" class="form-label">Wybierz zdjęcie:</label>
+                    <input type="file" name="file" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Dodaj zdjęcie</button>
+            </form>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // Zmiana widoczności formularza do dodawania zdjęcia
+        const addPhotoBtn = document.getElementById('add-photo-btn');
+        const uploadForm = document.getElementById('upload-form');
+
+        addPhotoBtn.addEventListener('click', function(event) {
+            event.preventDefault();  // Zatrzymujemy domyślne działanie (przekierowanie)
+            uploadForm.style.display = 'block';  // Pokazujemy formularz
+            addPhotoBtn.style.display = 'none';  // Ukrywamy przycisk
+        });
+
         function deletePhoto(photoId) {
             // Zmiana metody formularza na DELETE
             const form = document.getElementById(`delete-form-${photoId}`);
