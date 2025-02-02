@@ -11,7 +11,6 @@ Base = declarative_base()
 
 
 def get_db():
-    """Funkcja pomocnicza do zarządzania sesją bazy danych."""
     db = SessionLocal()
     try:
         yield db

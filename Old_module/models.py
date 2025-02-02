@@ -1,5 +1,4 @@
 from sqlalchemy import Column, Integer, String, LargeBinary
-from sqlalchemy.orm import relationship
 from pydantic import BaseModel
 from app.db import Base
 
@@ -11,7 +10,7 @@ class Photo(Base):
     id = Column(Integer, primary_key=True, index=True)
     filename = Column(String, index=True)
     content_type = Column(String)
-    data = Column(LargeBinary)  # Przechowywanie bajtów pliku
+    data = Column(LargeBinary)
 
 
 # Model Pydantic do walidacji

@@ -2,29 +2,27 @@ from sqlalchemy.orm import Session
 from app import models, schemas
 from passlib.context import CryptContext
 
-# Funkcja do usuwania zdjęcia
-
-
-def delete_photo(db: Session, photo_id: int):
-    db_photo = db.query(models.Photo).filter(models.Photo.id == photo_id).first()
-    if db_photo:
-        db.delete(db_photo)
-        db.commit()
-    return db_photo
-
-
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 def get_user(db: Session, user_id: int):
+    """
+    Retrieves a user by ID.
+    """
     return db.query(models.User).filter(models.User.id == user_id).first()
 
 
 def get_user_by_email(db: Session, email: str):
+    """
+    Retrieves a user by email.
+    """
     return db.query(models.User).filter(models.User.email == email).first()
 
 
 def create_user(db: Session, user: schemas.UserCreate):
+    """
+    Creates a new user with hashed password.
+    """
     hashed_password = pwd_context.hash(user.password)
     db_user = models.User(
         username=user.username,
