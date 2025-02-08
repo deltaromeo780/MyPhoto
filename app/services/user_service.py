@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from app import models, schemas
 from passlib.context import CryptContext
+from fastapi import HTTPException
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -34,3 +35,22 @@ def create_user(db: Session, user: schemas.UserCreate):
     db.commit()
     db.refresh(db_user)
     return db_user
+
+
+def delete_user(db: Session, user_id: int):
+    user = db.query(models.User).filter(models.User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Jeśli użytkownik ma zdjęcia, usuwamy je przed usunięciem użytkownika
+    db.query(models.Photo).filter(models.Photo.user_id == user_id).delete()
+
+    db.delete(user)
+    db.commit()
+
+
+def get_users(db: Session):
+    """
+    Retrieves all users from the database.
+    """
+    return db.query(models.User).all()

@@ -1,4 +1,6 @@
-from sqlalchemy import Column, Integer, String, LargeBinary
+from sqlalchemy import Column, Integer, String, LargeBinary, ForeignKey
+from sqlalchemy.orm import relationship
+
 from app.db import Base
 
 
@@ -12,3 +14,6 @@ class Photo(Base):
     filename = Column(String, index=True)
     content_type = Column(String)
     data = Column(LargeBinary)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))  # Dodajemy ondelete="CASCADE"
+
+    user = relationship("User", back_populates="photos")

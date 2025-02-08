@@ -1,4 +1,6 @@
 from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import relationship
+
 from app.db import Base
 
 
@@ -13,3 +15,4 @@ class User(Base):
     email = Column(String, unique=True, index=True, nullable=False)
     full_name = Column(String, nullable=True)
     hashed_password = Column(String, nullable=False)
+    photos = relationship("Photo", back_populates="user", cascade="all, delete")  # Dodajemy relację
