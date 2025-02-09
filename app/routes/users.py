@@ -21,7 +21,7 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     return user_service.create_user(db=db, user=user)
 
 
-@router.get("/users/{user_id}", response_model=schemas.UserResponse)
+@router.get("/{user_id}", response_model=schemas.UserResponse)
 def get_user(user_id: int = Path(..., title="ID użytkownika"), db: Session = Depends(get_db)):
     return db.query(models.User).filter(models.User.id == user_id).first()
 
@@ -31,7 +31,7 @@ def get_users(db: Session = Depends(get_db)):
     return db.query(models.User).all()
 
 
-@router.delete("/users/{user_id}", response_model=dict, tags=["users"])
+@router.delete("/{user_id}", response_model=dict, tags=["users"])
 def delete_user(user_id: int, db: Session = Depends(get_db)):
     """
     Deletes a user by ID.
