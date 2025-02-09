@@ -6,6 +6,10 @@ from fastapi import HTTPException
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
+def hash_password(password: str) -> str:
+    return pwd_context.hash(password)
+
+
 def get_user(db: Session, user_id: int):
     """
     Retrieves a user by ID.
